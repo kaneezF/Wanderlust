@@ -1,0 +1,225 @@
+<% layout('/layouts/boilerplate.ejs') -%>
+<style>
+
+@keyframes appear{
+    from{
+        opacity: 0;
+        scale: 0.5;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+.card{
+    animation: appear linear !important;
+    animation-timeline: view() !important;
+    animation-range: entry 0% cover 40% !important;
+}
+#filters{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
+
+.filter{
+        margin-top: 1rem;
+        margin-right: 2rem;
+        opacity: 0.7;
+        text-align: center;
+        position: relative; /* Needed for the line positioning */
+    }
+
+.filter:hover{
+        opacity: 1;
+        cursor: pointer;
+       
+    }
+
+.filter i,p{
+        color: #096C6C;
+    }
+    
+    /* Make the icon and text dark on hover */
+.filter:hover i, 
+.filter:hover p {
+    color: #000; /* Change to a darker color */
+}
+
+/* Add a line under the icon on hover */
+.filter:hover::after {
+    content: "";
+    position: absolute;
+    /* bottom: -4px; Adjust the spacing */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%; /* Adjust the line width */
+     height: 2px; 
+    background-color: #000; /* Line color */
+}
+
+.filter p{
+        font-size: small;
+    }
+
+a{
+        text-decoration: none;
+        color: #000;
+    }
+
+.tax-info{
+        display: none;
+    }
+
+   
+.tax-toggle {
+    border: 1px solid #000;
+    height: 2.5rem; 
+    display: flex;
+    border-radius: 10px;
+    align-items: center; 
+    padding: 0.5rem 1rem; 
+    margin-left: 3rem;
+    color: #000;
+    gap: 0.5rem;
+    }
+
+.form-check-input, .form-check-label, .tax-toggle:hover{
+        cursor: pointer;
+    }
+    
+
+    /* Checked state for the toggle */
+.form-check-input:checked {
+        background-color: #096C6C; 
+    }
+    
+</style>
+
+<div id="filters">
+
+    <a href="/listings" class="filter">
+        <div><i class="fa-solid fa-house"></i></div>
+        <p>ALL</p>
+    </a>
+
+    <a href="/listings?category=Trending" class="filter">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+    </a>
+
+    <a href="/listings?category=Amazing pools" class="filter">
+        <div><i class="fa-solid fa-person-swimming"></i></div>
+        <p>Amazing pools</p>
+    </a>
+
+    <a href="/listings?category=Amazing views" class="filter">
+        <div><i class="fa-solid fa-mountain"></i></div>
+        <p>Amazing views</p>
+    </a>
+
+    <a href="/listings?category=Boats" class="filter">
+        <div><i class="fa-solid fa-ship"></i></div>
+        <p>Boats</p>
+    </a>
+
+    <a href="/listings?category=Arctic" class="filter">
+        <div><i class="fa-solid fa-snowflake"></i></div>
+        <p>Arctic</p>
+    </a>
+
+    <a href="/listings?category=Castles" class="filter">
+        <div><i class="fa-brands fa-fort-awesome"></i></div>
+        <p>Castles</p>
+    </a>
+
+    <a href="/listings?category=Camping" class="filter">
+        <div><i class="fa-solid fa-campground"></i></div>
+        <p>Camping</p>
+    </a>
+
+    <a href="/listings?category=Iconic cities" class="filter">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Amazing cities</p>
+    </a>
+
+    <a href="/listings?category=Farm" class="filter">
+        <div><i class="fa-solid fa-wheat-awn"></i></div>
+        <p>Farm</p>
+    </a>
+
+
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Display Tax</label>
+          </div>
+    </div>
+</div>
+</div>
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+          <% for (i of allListings) { %>
+            <a href="/listings/<%= i._id %>" class="listing-link">
+                <div class="card col">
+                        <img src="<%= i.image.url %>" class="card-img-top" alt="listing image" style="height: 15rem; width: 100% !important;">
+                        <div class="card-img-overlay"></div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <%= i.title %> <br>
+                                <%= i.price.toLocaleString("en-IN") %> /night 
+                                <i class="tax-info"> &nbsp; &nbsp; +18% GST</i>  <br> <br>
+                                <%= i.description %>
+                            </p>
+                        </div>
+                   
+                    <!-- Wishlist Button below the image -->     
+                    <% if (currUser) { %>
+                        <form action="/wishlist/add/<%= i._id %>" method="POST" class="wishlist-form">
+                            <button class="btn btn-wishlist" type="submit" data-bs-toggle="tooltip" 
+                                    data-bs-placement="bottom" title="Add to Wishlist">
+                                <i class="ri-heart-3-fill" style="color: rgb(238, 83, 83);"></i>
+                            </button>
+                        </form>
+                    <% } %>
+                </div>  
+        <% } %>
+            </a>
+    </div> 
+
+
+<script>
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+        taxSwitch.addEventListener("click" , () => {
+            let taxInfo = document.getElementsByClassName("tax-info");
+            for(info of taxInfo){
+                if(info.style.display != "inline"){
+                    info.style.display = "inline";
+                }
+                else{
+                    info.style.display = "none";
+                }
+            }
+        })
+</script>
+
+<!-- Include Bootstrap Tooltips Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+          new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+  });
+</script>
+
+
+  
+  
+
+
+
+

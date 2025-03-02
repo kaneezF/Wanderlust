@@ -1,0 +1,185 @@
+<% layout('/layouts/boilerplate.ejs') -%>
+<style>
+   
+   .listing-container {
+    display: flex;
+    align-items: flex-start; /* Aligns content at the top */
+    gap: 40px; /* Space between image & text */
+    justify-content: center; /* Centers content */
+    flex-wrap: wrap; /* Makes it responsive */
+    width: 90%;
+    margin: auto;
+}
+
+.image-container {
+    flex: 0.4; /* Image takes 40% width */
+    max-width: 400px; /* Limit max width */
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.details-container {
+    flex: 0.6; /* Description takes 60% width */
+    width: 100%;
+    padding: 10px 20px; /* Add some padding */
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.description {
+    text-align: justify; /* Makes text look better */
+}
+
+@media (max-width: 768px) {
+    .listing-container {
+        flex-direction: column; /* Stack on smaller screens */
+        align-items: center;
+    }
+    
+    .image-container, .details-container {
+        flex: 1;
+        max-width: 100%;
+        text-align: center;
+    }
+}
+.reviews-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center; /* Ensures reviews are centered */
+}
+
+.review-card {
+    border: 1px solid rgb(140, 140, 140);
+    padding: 20px;
+    width: 30%; /* Default width for larger screens */
+    min-width: 250px; /* Prevents cards from becoming too small */
+    border-radius: 10px;
+    background: #f8f9fa;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.review-card:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .review-card {
+        width: 45%; /* Adjusts to 2 cards per row on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .review-card {
+        width: 100%; /* Stacks reviews in a single column on smaller screens */
+    }
+}
+
+.title{
+    margin-bottom: 50px;
+}
+
+</style>
+
+<% layout('/layouts/boilerplate.ejs') -%>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <!-- Listing Title -->
+            <h2 class="text-center title"><%= listing.title %></h2>
+
+            <!-- Flexbox Layout for Image & Details -->
+            <div class="listing-container d-flex">
+                <!-- Left Side: Image -->
+                <div class="image-container">
+                    <img src="<%= listing.image.url %>" class="img-fluid rounded" alt="Listing Image">
+                </div>
+
+                <!-- Right Side: Description -->
+                <div class="details-container">
+                    <p><strong>Owner of Listing:</strong> <%= listing.owner.username %></p>
+                    <p class="description"><strong>Description:</strong> <%= listing.description %></p>
+                    <p><strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %></p>
+                    <p><strong>Location:</strong> <%= listing.location %></p>
+                    <p><strong>Country:</strong> <%= listing.country %></p>
+                    <p><strong>Category:</strong> <%= listing.category %></p>
+                </div>
+            </div>
+
+            <!-- Owner Controls -->
+            <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
+                <div class="d-flex justify-content-between my-4">
+                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-success">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                        <button class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            <% } %>
+
+            <hr>
+
+            <!-- Reviews Section -->
+            <% if (currUser) { %>
+                <div class="mb-5">
+                    <h4 class="mb-3">Leave a Review</h4>
+                    <form method="POST" action="/listings/<%= listing._id %>/reviews" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Rating</label>
+                            <fieldset class="starability-slot">
+                                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked />
+                                <input type="radio" id="rate1" name="review[rating]" value="1" />
+                                <label for="rate1">1 star</label>
+                                <input type="radio" id="rate2" name="review[rating]" value="2" />
+                                <label for="rate2">2 stars</label>
+                                <input type="radio" id="rate3" name="review[rating]" value="3" />
+                                <label for="rate3">3 stars</label>
+                                <input type="radio" id="rate4" name="review[rating]" value="4" />
+                                <label for="rate4">4 stars</label>
+                                <input type="radio" id="rate5" name="review[rating]" value="5" />
+                                <label for="rate5">5 stars</label>
+                            </fieldset>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comment</label>
+                            <textarea class="form-control" id="comment" name="review[comment]" rows="3" required></textarea>
+                            <div class="invalid-feedback">Please add a comment.</div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Submit Review</button>
+                    </form>
+                </div>
+            <% } %>
+
+            <!-- All Reviews -->
+            <h4 class="mb-3">All Reviews</h4>
+            <div class="reviews-container">
+                <% for (let i of listing.reviews) { %>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <h5 class="review-author"><%= i.author.username %></h5>
+                            <p class="starability-result" data-rating="<%= i.rating %>"></p>
+                        </div>
+                        <p class="review-text"><%= i.comment %></p>
+                        <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= i._id %>?_method=DELETE">
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
+                        </form>
+                    </div>
+                <% } %>
+            </div>
+
+        </div>
+    </div>
+</div>
+

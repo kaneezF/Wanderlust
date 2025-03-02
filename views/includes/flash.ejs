@@ -1,0 +1,80 @@
+<!-- <% if (success && success.length) { %> -->
+    <!-- <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div> -->
+<!-- <% } %> -->
+
+
+
+<!-- <% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %> -->
+
+
+<!-- <% if (success && success.length) { %>
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if (danger && danger.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= danger %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if (error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %> -->
+
+<% if (success && success.length) { %>
+    <script>
+        window.onload = function() {
+            const notyf = new Notyf({
+                position: {
+                    x: 'center', // can be 'left', 'center', or 'right'
+                    y: 'top',    // can be 'top' or 'bottom'
+                }
+            });
+            notyf.success("<%= success %>");
+        };
+    </script>
+<% } %>
+
+<% if (danger && danger.length) { %>
+    <script>
+        window.onload = function() {
+            const notyf = new Notyf({
+                position: {
+                    x: 'center',
+                    y: 'top',
+                }
+            });
+            notyf.error("<%= danger %>");
+        };
+    </script>
+<% } %>
+
+<% if (error && error.length) { %>
+    <script>
+        window.onload = function() {
+            const notyf = new Notyf({
+                position: {
+                    x: 'center',
+                    y: 'top',
+                }
+            });
+            notyf.error("<%= error %>");
+        };
+    </script>
+<% } %>
+

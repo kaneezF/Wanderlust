@@ -1,0 +1,43 @@
+<% layout('layouts/boilerplate') -%>
+<style>
+    
+.card-img-top-wishlist{
+    border-radius: 1rem !important;
+    /* width: 90% !important; */
+    object-fit: cover;
+}
+
+.listing-card{
+    height: 80% !important;
+}
+</style>
+<div class="mt-4 wishlist-container">
+    <h2 class="text-center mb-4">My Wishlist</h2>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+        <% if (wishlist && wishlist.listings.length > 0) { %>
+            <% wishlist.listings.forEach(listing => { %>
+                <div class="col position-relative">
+                <div class="card listing-card">
+                    <img src="<%= listing.image.url %>" class="card-img-top-wishlist" alt="listing image"  style="height: 16rem;">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <%= listing.title %> <br>
+                            <%= listing.price.toLocaleString("en-IN") %> /night
+                            <i class="tax-info"> &nbsp; &nbsp; +18% GST</i> <br><br>
+                            <%= listing.description %> 
+                        </p>
+                    </div>
+                </div>
+                 <!-- Remove button -->
+        <form action="/wishlist/remove/<%= listing._id %>" method="POST">
+            <button class="btn btn-danger mb-4">Remove</button>
+        </form>
+        </div>
+            <% }); %>
+        <% } else { %>
+            <p>Your wishlist is empty!</p>
+        <% } %>
+    </div>
+   
+</div>
