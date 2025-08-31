@@ -116,6 +116,9 @@ app.use("/listings/:id/reviews" , reviewRouter);
 app.use("/" , userRouter);
 app.use(wishlistRouter);
 
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
 //error handling for incorrect path
 app.all("*" , (req , res , next) => {
